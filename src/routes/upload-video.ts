@@ -23,12 +23,13 @@ export async function uploadVideoRoute(app: FastifyInstance) {
         
         if(!data) return reply.status(400).send({ error: 'Nenhum arquivo encontrado.'})
 
-        const extension = path.extname(data.fieldname)
+        const extensionExplode = (data.filename.split('.')) 
+        const extension = `.${extensionExplode[extensionExplode.length - 1]}`
 
         if(extension !== '.mp3') return reply.status(400).send({ error: 'Tipo do arquivo é inválido, por favor faça upload de MP3'})
     
         const fileBasename = path.basename(data.fieldname, extension)
-        const fileUploadName = `${fileBasename}-${randomUUID}${extension}`
+        const fileUploadName = `${fileBasename}-${randomUUID()}${extension}`
 
         const uploadDestination = path.resolve(__dirname, '../../tmp', fileUploadName)
         

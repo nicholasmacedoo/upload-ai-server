@@ -36,7 +36,11 @@ export async function createTranscriptionRoute(app: FastifyInstance) {
             response_format: 'json',
             temperature: 0,
             prompt,
+        }).catch(response => {
+            console.log(response)
+            throw new Error(response)
         })
+
         const transcription = response.text
 
         await prisma.video.update({
