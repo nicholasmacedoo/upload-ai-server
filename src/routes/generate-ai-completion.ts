@@ -11,9 +11,9 @@ export async function generateAICompletionRoute(app: FastifyInstance) {
             prompt: z.string(),
             temperature: z.number().min(0).max(1).default(0.5)
         })
-
-        const { videoId, temperature, prompt } = paramsSchema.parse(request.params)
-
+        
+        const { videoId, temperature, prompt } = paramsSchema.parse(request.body)
+        
         const video = await prisma.video.findUniqueOrThrow({
             where: {
                 id: videoId,
@@ -25,7 +25,7 @@ export async function generateAICompletionRoute(app: FastifyInstance) {
         }
 
         const promptMessage = prompt.replace('{transcription}', video.transcription)
-
+    
         const response = await openai.chat.completions.create({
             model: 'gpt-3.5-turbo-16k',
             temperature,
